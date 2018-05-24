@@ -7,6 +7,7 @@ from flask import url_for
 from flask import flash
 from flask import render_template
 from flask_script import Manager
+from flask_script import Shell
 
 from flask_wtf import Form
 from wtforms import StringField
@@ -49,6 +50,12 @@ class User(db.Model):
 class NameForm(Form):
     name = StringField('What\'s your name?', validators=[Required()])
     submit = SubmitField('Submit')
+
+# shell context
+def make_shell_context():
+  return dict(app=app, db=db, User=User, Role=Role)
+
+manager.add_command("shell", Shell(make_context=make_shell_context))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
