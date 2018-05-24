@@ -1,4 +1,20 @@
-{% extends 'base.html' %} {% block title %}Home{% endblock %} {%block right %}
+{% extends 'base.html' %} 
+{% block title %}Home{% endblock %} 
+{% block style %}
+{{ super () }}
+<style>
+ aside { background: #1f8dd6; margin: 1em 0; padding: 0.3em 1em; border-radius: 3px; color: #fff; }
+</style>
+{% endblock %}
+{%block right %}
+<!-- Start show message -->
+{% for message in get_flashed_messages() %}
+<aside>
+  <p>{{ message }}</p>
+</aside>
+{% endfor %}
+<!-- End show message -->
+
 <h1>Hello, {% if name %} {{ name }} {% else %} Flasky! {% endif %}</h1>
 <form class="pure-form pure-form-stacked" method="POST">
   <fieldset>
