@@ -16,6 +16,11 @@
 <!-- End show message -->
 
 <h1>Hello, {% if name %} {{ name }} {% else %} Flasky! {% endif %}</h1>
+{% if not know %}
+<p>Pleased to meet you!</p>
+{% else %}
+<p>Happy to see you again!</p>
+{% endif %}
 <form class="pure-form pure-form-stacked" method="POST">
   <fieldset>
     <legend>Enter your name: </legend>
