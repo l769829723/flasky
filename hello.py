@@ -1,15 +1,32 @@
 from flask import Flask
+from flask import session
+from flask import redirect
+from flask import url_for
+from flask import flash
 from flask import render_template
 from flask_script import Manager
+
+from flask_wtf import Form
+from wtforms import StringField
+from wtforms import SubmitField
+from wtforms.validators import Required
 
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'vLIiT3Qcht68WF8NakLeeGOGLuGgluuGdEVK6psOXsDdO3u3'
 manager = Manager(app) 
 
-@app.route('/')
+class NameForm(Form):
+  name = StringField('What\'s your name?', validators=[Required()])
+  submit = SubmitField('Submit')
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-  return render_template('index.html')
+  form = NameForm()
+  if form.validate_on_submit():
+    session['name'] = form.name.data
+    return redirect(url_for('index'))
+  return render_template('index.html', form=form, name=session.get('name'))
 
 @app.route('/user/<name>/')
 def user(name):

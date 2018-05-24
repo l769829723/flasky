@@ -1,5 +1,13 @@
-{% extends 'base.html' %}
-{% block title %}Home{% endblock %}
-{%block right %}
-<h1>Hello, flasky!</h1>
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {%block right %}
+<h1>Hello, {% if name %} {{ name }} {% else %} Flasky! {% endif %}</h1>
+<form class="pure-form pure-form-stacked" method="POST">
+  <fieldset>
+    <legend>Enter your name: </legend>
+ {{ form.hidden_tag() }} 
+ {{ form.label }} 
+ {{ form.name(placeholder="Enter your name.", required=True) }} 
+ {{ form.submit(class="pure-button
+pure-button-primary") }}
+  </fieldset>
+</form>
 {% endblock %}
