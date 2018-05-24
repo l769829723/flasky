@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}{% endblock %} | {{ APPName|default("Flasky") }}</title>
+
+  {% block style %}
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+  <!--[if lte IE 8]>
+      <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
+  <!--<![endif]-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='blog.css') }}"> {% endblock %}
+</head>
+
+<body>
+  {% block body %}
+  <div id="layout" class="pure-g">
+    {% block content %}
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+      {% include "navbar.html" %}
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+      <div>
+        <!-- A wrapper for all the blog posts -->
+        {% block right %}
+        <div class="posts">
+          <h1 class="content-subhead">Pinned Post</h1>
+
+          <!-- A single blog post -->
+          <section class="post">
+            <header class="post-header">
+              <img width="48" height="48" alt="Andrew Wooldridge&#x27;s avatar" class="post-avatar" src="/img/common/andrew-avatar.png">
+
+              <h2 class="post-title">YUI 3.10.2 Released</h2>
+
+              <p class="post-meta">
+                By
+                <a class="post-author" href="#">Andrew Wooldridge</a> under
+                <a class="post-category post-category-yui" href="#">YUI</a>
+              </p>
+            </header>
+
+            <div class="post-description">
+              <p>
+                We are happy to announce the release of YUI 3.10.2! You can find it now on the Yahoo! CDN, download it directly, or pull
+                it in via npm. We’ve also updated the YUI Library website with the latest documentation.
+              </p>
+            </div>
+          </section>
+        </div>
+        {% endblock %}
+
+        <!-- Footer start -->
+        {% include 'footer.html' %}
+        <!-- End footer -->
+
+      </div>
+    </div>
+    {% endblock %}
+  </div>
+  {% endblock %}
+
+  <!-- Scripts start -->
+  {% block script %}{% endblock %}
+  <!-- End script -->
+  
+</body>
+
+</html>

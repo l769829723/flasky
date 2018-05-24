@@ -1,0 +1,24 @@
+{% block left %}
+<div class="header">
+  {% block header %}
+  <h1 class="brand-title">
+    {% block brand %}Flasky | A Sample Blog{% endblock %}
+  </h1>
+  <h2 class="brand-tagline">
+    {% block tag_line %}Creating a blog layout using Pure{% endblock %}
+  </h2>
+  <nav class="nav">
+    <ul class="nav-list">
+      {% block nav_list %}
+      <li class="nav-item">
+        <a class="pure-button" href="http://purecss.io">Pure</a>
+      </li>
+      <li class="nav-item">
+        <a class="pure-button" href="http://yuilibrary.com">YUI Library</a>
+      </li>
+      {% endblock %}
+    </ul>
+  </nav>
+  {% endblock %}
+</div>
+{% endblock %}
