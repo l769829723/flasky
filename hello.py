@@ -16,6 +16,9 @@ from wtforms.validators import Required
 
 from flask_sqlalchemy import SQLAlchemy
 
+from flask_migrate import Migrate
+from flask_migrate import MigrateCommand
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
@@ -26,6 +29,8 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 manager = Manager(app)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
 
 # ---------- ORM -----------
 class Role(db.Model):
