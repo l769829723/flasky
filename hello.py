@@ -9,7 +9,7 @@ from flask import render_template
 from flask_script import Manager
 from flask_script import Shell
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import Required
@@ -20,6 +20,7 @@ from flask_migrate import Migrate
 from flask_migrate import MigrateCommand
 
 from flask_mail import Mail
+from flask_mail import Message
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,9 +34,12 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # mail config
+app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
+app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <1054473703@qq.com>'
+app.config['FLASKY_ADMIN'] = os.environ.get('FLASKY_ADMIN')
 app.config['MAIL_SERVER'] = 'smtp.qq.com'
 app.config['MAIL_PORT'] = '465'
-app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
@@ -65,15 +69,27 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-class NameForm(Form):
+class NameForm(FlaskForm):
     name = StringField('What\'s your name?', validators=[Required()])
     submit = SubmitField('Submit')
 
-# shell context
+# shell 上下文
 def make_shell_context():
-  return dict(app=app, db=db, User=User, Role=Role)
+    return dict(app=app, db=db, User=User, Role=Role)
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
+
+# 发送邮件方法
+def send_mail(to, subject, template, **kwargs):
+  msg = Message(
+    app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject,
+    sender=app.config['FLASKY_MAIL_SENDER'], 
+    recipients=[to]
+  )
+  msg.body = render_template(template + '.txt', **kwargs)
+  msg.html = render_template(template + '.html', **kwargs)
+  mail.send(msg)
+  print('A mail send to %r!' % to)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -82,11 +98,13 @@ def index():
         old_name = session.get('name')
         user = User.query.filter_by(username=form.name.data).first()
         if user is None:
-          user = User(username=form.name.data)
-          db.session.add(user)
-          session['know'] = False
+            user = User(username=form.name.data)
+            db.session.add(user)
+            session['know'] = False
+            if app.config['FLASKY_ADMIN']:
+              send_mail(app.config['FLASKY_ADMIN'], 'New User %r' % user.username, 'mail/new_user', user=user)
         else:
-          session['know'] = True
+            session['know'] = True
         session['name'] = form.name.data
         form.name.data = ''
         return redirect(url_for('index'))
